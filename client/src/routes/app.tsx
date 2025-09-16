@@ -5,10 +5,14 @@ import styles from "./app.module.css";
 import type { Insight } from "../schemas/insight.ts";
 
 export const App = () => {
-  const [insights, setInsights] = useState<Insight>([]);
+  // Bugfix: was declaring single Insight but initialising with array
+  const [insights, setInsights] = useState<Insight[]>([]);
 
   useEffect(() => {
-    fetch(`/api/insights`).then((res) => setInsights(res.json()));
+    (async () => {
+      const res = await fetch(`/api/insights`);
+      setInsights(await res.json());
+    })();
   }, []);
 
   return (
