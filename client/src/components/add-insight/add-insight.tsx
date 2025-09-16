@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { BRANDS } from "../../lib/consts.ts";
 import { Button } from "../button/button.tsx";
 import { Modal, type ModalProps } from "../modal/modal.tsx";
@@ -34,9 +35,16 @@ const createInsight = async (brand: number, text: string) => {
 };
 
 export const AddInsight = (props: AddInsightProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+  
   const addInsight = async (event: React.FormEvent) => {
     // Prevent page reload on submit
     event.preventDefault();
+
+    // Prevent multiple submissions
+    if (isLoading) return;
+    
+    setIsLoading(true);
     
     const formData = new FormData(event.currentTarget as HTMLFormElement);
     const brand = Number(formData.get("brand"));
@@ -65,7 +73,11 @@ export const AddInsight = (props: AddInsightProps) => {
       <h1 className={styles.heading}>Add a new insight</h1>
       <form className={styles.form} onSubmit={addInsight}>
         <label className={styles.field}>
-          <select className={styles["field-input"]} name="brand">
+          <select 
+          className={styles["field-input"]} 
+          name="brand"
+          disabled={isLoading}
+          >
             // Bugfix:resolve console error Each child in a list should have a unique "key" prop.
             {BRANDS.map(({ id, name }) => <option key={id} value={id}>{name}</option>)}
           </select>
@@ -77,9 +89,15 @@ export const AddInsight = (props: AddInsightProps) => {
             rows={5}
             placeholder="Something insightful..."
             name="text"
+            disabled={isLoading}
           />
         </label>
-        <Button className={styles.submit} type="submit" label="Add insight" />
+        <Button 
+        className={styles.submit} 
+        type="submit" 
+        label={isLoading ? "Adding insight..." : "Add insight"} 
+        disabled={isLoading}
+        />
       </form>
     </Modal>
   );
