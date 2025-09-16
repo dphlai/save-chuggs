@@ -65,6 +65,8 @@ export const AddInsight = (props: AddInsightProps) => {
     } catch (error) {
       console.error("Failed to create insight:", error);
       alert("Failed to create insight. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
