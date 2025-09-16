@@ -10,8 +10,18 @@ export const App = () => {
 
   useEffect(() => {
     (async () => {
-      const res = await fetch(`/api/insights`);
-      setInsights(await res.json());
+      try {
+        const response = await fetch(`/api/insights`);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch insights: ${response.status}`);
+        }
+        
+        const insights = await response.json();
+        setInsights(insights);
+      } catch (error) {
+        console.error("Failed to load insights:", error);
+      }
     })();
   }, []);
 
